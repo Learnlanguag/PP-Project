@@ -16,3 +16,27 @@ const int string sep=" |";
 const int totalLen =maxName + maxMoney + tpyeSize + maxNumber + sep.size() * 4;
 const string sepLine = sep + string(totalLen-1, '=') + '|';
 
+class Bank{
+	private:
+		unsigned long long account_number;
+		char holder_name[51];
+		int deposit;
+		char type;
+	
+	public:
+	   
+	   void	systemClear();
+	   void getData();
+	   void writeData();
+	   void depositWithdraw(int a,int option);
+	   void displayInvidulRecords(unsingned long long n);
+	   void report() const;
+	   void showAccount() const;//TO DISPLAY ACCOUNT DETAILS
+	   void dep(int n);//TO ADD IN DEPOSIT
+	   void draw(int x);//TO SUBTRACT FROM DEPOSIT
+	   unsigned long long retAcNo() const;//function to return account number
+	   int retDeposit()const; //function to return balance amount
+	   char retType()const; //TO WITHDRAW FROM DEPOSIT
+	   void modificationData();
+	
+};
