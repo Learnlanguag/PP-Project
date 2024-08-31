@@ -1,6 +1,6 @@
 //Banking Record System
 #include<iostream>
-#include<fstram>
+#include<fstream>
 #include<cctype>
 #include<iomanip>
 #include<string>
@@ -12,8 +12,8 @@ const int maxName=50;
 const int maxMoney=7;
 const int maxNumber=12;
 const int typeSize=4;
-const int string sep=" |";
-const int totalLen =maxName + maxMoney + tpyeSize + maxNumber + sep.size() * 4;
+const string sep=" |";
+const int totalLen =maxName + maxMoney + typeSize + maxNumber + sep.size() * 4;
 const string sepLine = sep + string(totalLen-1, '=') + '|';
 
 class Bank{
@@ -29,7 +29,7 @@ class Bank{
 	   void getData();
 	   void writeData();
 	   void depositWithdraw(int a,int option);
-	   void displayInvidulRecords(unsingned long long n);
+	   void displayInvidulRecords(unsigned long long n);
 	   void report() const;
 	   void showAccount() const;//TO DISPLAY ACCOUNT DETAILS
 	   void dep(int n);//TO ADD IN DEPOSIT
