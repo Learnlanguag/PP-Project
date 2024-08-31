@@ -1,0 +1,17 @@
+//Banking Record System
+#include<iostream>
+#include<fstram>
+#include<cctype>
+#include<iomanip>
+#include<string>
+using namespace std;
+
+//-------------------------------------------------------//
+
+const int maxName=50;
+const int maxMoney=7;
+const int maxNumber=12;
+const int typeSize=4;
+const int string sep=" |";
+const int totalLen =maxName + maxMoney + tpyeSize+
+
