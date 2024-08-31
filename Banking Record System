@@ -13,5 +13,6 @@ const int maxMoney=7;
 const int maxNumber=12;
 const int typeSize=4;
 const int string sep=" |";
-const int totalLen =maxName + maxMoney + tpyeSize+
+const int totalLen =maxName + maxMoney + tpyeSize + maxNumber + sep.size() * 4;
+const string sepLine = sep + string(totalLen-1, '=') + '|';
 
