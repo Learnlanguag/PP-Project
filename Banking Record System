@@ -1,42 +1,212 @@
-//Banking Record System
-#include<iostream>
-#include<fstream>
-#include<cctype>
-#include<iomanip>
-#include<string>
+#include <iostream>
+#include <cctype>
+#include <iomanip>
+#include <string>
+
 using namespace std;
 
 //-------------------------------------------------------//
 
-const int maxName=50;
-const int maxMoney=7;
-const int maxNumber=12;
-const int typeSize=4;
-const string sep=" |";
-const int totalLen =maxName + maxMoney + typeSize + maxNumber + sep.size() * 4;
-const string sepLine = sep + string(totalLen-1, '=') + '|';
+const int maxName = 50;
+const int maxMoney = 7;
+const int maxNumber = 12;
+const int typeSize = 4;
+const string sep = " |";
+const int totalLen = maxName + maxMoney + typeSize + maxNumber + sep.size() * 4;
+const string sepLine = sep + string(totalLen - 1, '=') + '|';
 
-class Bank{
-	private:
-		unsigned long long account_number;
-		char holder_name[51];
-		int deposit;
-		char type;
-	
-	public:
-	   
-	   void	systemClear();
-	   void getData();
-	   void writeData();
-	   void depositWithdraw(int a,int option);
-	   void displayInvidulRecords(unsigned long long n);
-	   void report() const;
-	   void showAccount() const;//TO DISPLAY ACCOUNT DETAILS
-	   void dep(int n);//TO ADD IN DEPOSIT
-	   void draw(int x);//TO SUBTRACT FROM DEPOSIT
-	   unsigned long long retAcNo() const;//function to return account number
-	   int retDeposit()const; //function to return balance amount
-	   char retType()const; //TO WITHDRAW FROM DEPOSIT
-	   void modificationData();
-	
+class Bank {
+private:
+    unsigned long long accountNumber;
+    string holderName; // Changed to string for multi-part names
+    int deposit;
+    char type;
+
+public:
+    void getData();
+    void display(unsigned long long n, Bank accounts[], int size);
+    void showAccount() const; // TO DISPLAY ACCOUNT DETAILS
+    void dep(int n); // TO ADD IN DEPOSIT
+    void draw(int x); // TO SUBTRACT FROM DEPOSIT
+    unsigned long long retAcNo() const; // function to return account number
+    int retDeposit() const; // function to return balance amount
+    char retType() const; // TO WITHDRAW FROM DEPOSIT
+    void report() const; // Report account details
 };
+
+bool isDigits(string str) {
+    for (char c : str) {
+        if (!isdigit(c)) {
+            return false; // Return false if any character is not a digit
+        }
+    }
+    return true; // Return true if all characters are digits
+}
+
+void Bank::getData() {
+    cout << "\n\n\n============CREATE BANK ACCOUNT==========\n\n";
+
+    // Get Account Number as a string
+    string accountNumberStr;
+    cout << "Enter the Account Number (12 digits): ";
+    while (true) {
+        cin >> accountNumberStr;
+
+        // Validate Account Number
+        if (accountNumberStr.length() != 12 || !isDigits(accountNumberStr)) {
+            cout << "Error: The account number must be 12 digits. \nPlease try again: ";
+        } else {
+            accountNumber = stoull(accountNumberStr); // Convert string to unsigned long long
+            break; // Valid input, exit the loop
+        }
+    }
+
+    // Clear the input buffer (optional, but good practice)
+    cin.ignore(); // This ignores the newline character left in the buffer
+
+    // Get Account Holder Name (multi-part)
+    cout << "Enter Account Holder Name: ";
+    getline(cin, holderName); // This will take the entire line as input
+
+    // Get Account Type
+    cout << "Which type of Account (S for Saving, C for Current): ";
+    cin >> type;
+    type = toupper(type);
+
+    // Validate Account Type
+    while (type != 'S' && type != 'C') {
+        cout << "Please enter either S or C: ";
+        cin >> type;
+        type = toupper(type);
+    }
+
+    // Get Initial Deposit Amount
+    string depositStr;
+    if (type == 'S') {
+        cout << "Enter Initial Amount for Saving Account (Minimum 500/-): ";
+    } else {
+        cout << "Enter Initial Amount for Current Account (Minimum 1000/-): ";
+    }
+
+    while (true) {
+        cin >> depositStr;
+
+        // Validate Deposit Amount
+        if (!isDigits(depositStr)) {
+            cout << "Error: Please enter a valid numeric amount for the deposit: ";
+        } else {
+            deposit = stoi(depositStr); // Convert string to integer
+            if (deposit < (type == 'S' ? 500 : 1000) || deposit >= 1000000) {
+                cout << "Error: Amount must be between " << (type == 'S' ? 500 : 1000) << " and 1000000. Please try again: ";
+            } else {
+                break; // Valid input, exit the loop
+            }
+        }
+    }
+
+    cout << "Account has been created successfully.\n";
+}
+
+void Bank::display(unsigned long long n, Bank accounts[], int size) {
+    bool found = false; // Flag to indicate if the account was found
+
+    cout << "\nBALANCE DETAILS\n"; // Header for balance details
+
+    // Iterate through the array of accounts
+    for (int i = 0; i < size; i++) {
+        // Check if the account number matches the provided number
+        if (accounts[i].retAcNo() == n) {
+            accounts[i].showAccount(); // Display the account details
+            found = true; // Set the flag to true
+            break; // Exit the loop after finding the account
+        }
+    }
+
+    // If no account was found, display a message
+    if (!found) {
+        cout << "\n\nAccount Details not Found.";
+    }
+}
+
+void Bank::report() const {
+    cout << sep <<
+        setw(maxNumber) << accountNumber << sep <<
+        setw(maxName) << holderName << sep <<
+        setw(typeSize) << type << sep <<
+        setw(maxMoney) << deposit << sep << endl << sepLine << endl;
+}
+
+void Bank::dep(int x) {
+    deposit += x; // Add to deposit
+}
+
+void Bank::draw(int x) {
+    deposit -= x; // Subtract from deposit
+}
+
+unsigned long long Bank::retAcNo() const {
+    return accountNumber; // Return account number
+}
+
+int Bank::retDeposit() const {
+    return deposit; // Return deposit amount
+}
+
+char Bank::retType() const {
+    return type; // Return account type
+}
+
+void Bank::showAccount() const {
+    cout << "\nAccount Number: " << accountNumber << endl;
+    cout << "Account Holder Name: " << holderName << endl;
+    cout << "Account Type: " << (type == 'S' ? "Saving" : "Current") << endl;
+    cout << "Balance: " << deposit << endl;
+}
+
+
+int main() {
+    const int maxAccounts = 100; // Maximum number of accounts
+    Bank accounts[maxAccounts]; // Array to hold bank accounts
+    int accountCount = 0; // Counter for the number of accounts
+    int choice; // Variable to store user choice
+
+    do {
+        cout << "\n===== BANK MANAGEMENT SYSTEM =====\n";
+        cout << "1. Create a New Account\n";
+        cout << "2. Display Account Details\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                if (accountCount < maxAccounts) {
+                    accounts[accountCount].getData(); // Create a new bank account
+                    accountCount++;
+                } else {
+                    cout << "Error: Maximum account limit reached.\n";
+                }
+                break;
+
+            case 2:
+                if (accountCount == 0) {
+                    cout << "No accounts available to display.\n";
+                } else {
+                    unsigned long long searchAccountNumber;
+                    cout << "Enter account number to search: ";
+                    cin >> searchAccountNumber;
+                    accounts[0].display(searchAccountNumber, accounts, accountCount); // Display details for the specified account
+                }
+                break;
+
+            case 3:
+                cout << "Exiting the program. Thank you!\n";
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 3); // Repeat until the user chooses to exit
+
+    return 0;
+}
